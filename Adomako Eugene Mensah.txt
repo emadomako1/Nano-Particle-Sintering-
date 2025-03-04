@@ -1,0 +1,6 @@
+Nanoparticle Sintering
+
+1. Use ASE to generate initial configurations of metallic nanoparticles eg: you can use Icosahedron('Au', 4) and Icosahedron('Cu', 4)
+2. Simulate the sintering process in LAMMPS by applying appropriate temperature ramps (300 to 1200 K then from  1200 to 300).
+3. Monitor the neck growth between particles and study the kinetics of sintering in Ovito.
+4. Calculate properties such as formation energy, migration barriers, electronic structures and other correlated parameters.

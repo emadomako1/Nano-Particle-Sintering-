@@ -1,0 +1,43 @@
+# LAMMPS Input Script for Nanoparticle Sintering
+
+units metal
+dimension 3
+boundary p p p
+atom_style atomic
+
+# Read data file
+read_data nanoparticles.lmp
+
+# Define potential (assuming use of EAM potential for gold)
+pair_style eam/alloy
+pair_coeff * * AlCu.eam.alloy Al Cu
+
+# Define simulation settings
+neighbor 2.0 bin
+neigh_modify delay 5 every 1
+
+# Apply initial velocities
+velocity all create 300.0 12345 mom yes rot yes dist gaussian
+
+# Equilibrate at initial temperature
+fix 1 all nvt temp 300.0 300.0 0.1
+timestep 0.001
+run 5000
+
+# Dump atom positions and velocities every 100 timesteps
+dump 1 all custom 100 dump_nanoparticles.lammpstrj id type x y z vx vy vz
+
+# Gradually heat the system to initiate sintering
+fix 2 all temp/berendsen 300.0 1200.0 100.0
+run 20000
+
+# Gradually cool the system to solidify
+fix 3 all temp/berendsen 1200.0 300.0 100.0
+run 20000
+
+# Define thermodynamic output
+thermo 100
+thermo_style custom step temp pe ke etotal press
+
+# Write output
+write_data output_nanoparticles_sintered.lmp
